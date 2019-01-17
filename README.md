@@ -21,7 +21,7 @@ Set your username (UW Net ID), password, and desired poll host:
 ```python
 user = 'MyUW Username (@uw.edu email)'
 password = 'MyUW Password'
-host = 'My Favorite Teacher'
+host = 'PollEverywhere URL Extension e.g. "uwpsych"'
 ```
 
 And run the script. If you're importing PollEvBot as a library, you will need to use run(), which takes the following keyword arguments:
@@ -37,10 +37,10 @@ from PollEvBot.src import Poll
 
 user = 'MyUW Username (@uw.edu email)'
 password = 'MyUW Password'
-host = 'My Favorite Teacher'
+host = 'PollEverywhere URL Extension e.g. "uwpsych"'
 
-with Poll(username=user, password=password, poll_host=host) as poll:
-    poll.run(delay=5, wait_to_respond=5, run_forever=True)
+with Poll(user, password, host) as poll:
+    poll.run()
 ```
 Alternatively, you can input your login credentials into main.py and run it from there.
 
