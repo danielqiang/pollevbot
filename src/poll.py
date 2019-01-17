@@ -194,7 +194,7 @@ class Poll(requests.Session):
             print("The instructor did not specify a correct answer for this question. ")
             print("Successfully selected option 1: " + str(poll_options[0]['humanized_value'] + '!'))
 
-    def run(self, delay=0.0, wait_to_respond=0.0, clear_responses=False, run_forever=False, ignore_prev_polls=True):
+    def run(self, delay=5, wait_to_respond=5, clear_responses=False, run_forever=True, ignore_prev_polls=True):
         """
         Runs the script.
 
