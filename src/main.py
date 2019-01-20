@@ -1,4 +1,4 @@
-from PollEvBot.src import Poll
+from src import Poll
 
 
 def main():
