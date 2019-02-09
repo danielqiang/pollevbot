@@ -1,6 +1,6 @@
 # PollEvBot
 
-PollEvBot is a bot that automatically responds to polls from PollEverywhere. It continually checks if a specified poll user has opened any polls. Once a poll has been opened, the bot identifies and submits the correct response to PollEverywhere by parsing response metadata. It submits a random option if the poll does not have a specified correct response.
+PollEvBot is a bot that automatically responds to polls from PollEverywhere. It continually checks if a specified poll user has opened any polls. Once a poll has been opened, the bot identifies and submits the correct response to PollEverywhere. It submits a random option if the poll does not have a specified correct response.
 
 ## Dependencies
 
