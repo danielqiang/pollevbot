@@ -104,6 +104,4 @@ venv.bak/
 .mypy_cache/
 
 .idea/
-__init__.py
 local
-src/local.py
