@@ -44,7 +44,7 @@ class Bot(requests.Session):
 
     def _pollev_login(self):
         """
-        Logs into PollEv.
+        Logs into PollEv via the homepage.
 
         :raise AssertionError if login fails.
         """
@@ -134,7 +134,8 @@ class Bot(requests.Session):
                 r = self.get(endpoints['firehose_no_token'].format(
                     host=self.poll_host, timestamp=self.timestamp
                 ), timeout=0.3)
-            # The uid is a poll's unique id.
+            # The uid is a poll's unique id. If this uid is different, then
+            # the host has opened a new poll.
             uid = json.loads(r.json()['message'])['uid']
         # Firehose either doesn't respond or responds with no data if no poll is open.
         except (requests.exceptions.ReadTimeout, KeyError):
@@ -190,6 +191,9 @@ class Bot(requests.Session):
 
     @staticmethod
     def print_results(poll_data, response, answer_id, has_correct_ans):
+        """
+        Informational terminal output.
+        """
         correct_ans_index = answer_id - poll_data['options'][0]['id']
 
         print("\nPoll Title: " + poll_data['title'] + "\n")
