@@ -6,9 +6,11 @@ PollEvBot is a bot that automatically responds to polls from PollEverywhere. It 
 
 [Requests](https://github.com/requests/requests), [BeautifulSoup](https://github.com/waylan/beautifulsoup)
 
-## Usage
+## Requirements
 
-You just need to have a PollEverywhere account to use the script!
+All you need is a [PollEverywhere account](https://www.pollev.com) to use the script!
+
+## Usage
 
 First, install `PollEvBot`:
 ```
