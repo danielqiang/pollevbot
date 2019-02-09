@@ -1,6 +1,6 @@
 # PollEvBot
 
-PollEvBot is a script that automatically answers polls from PollEverywhere. It continually checks if a specified poll user has opened any polls. Once a poll has been opened, the bot finds and submits the correct response to PollEverywhere, or submits a random one if the poll has no correct response.
+PollEvBot is a bot that automatically responds to polls from PollEverywhere. It continually checks if a specified poll user has opened any polls. Once a poll has been opened, the bot identifies and submits the correct response to PollEverywhere by parsing response metadata. It submits a random option if the poll does not have a specified correct response.
 
 ## Dependencies
 
@@ -8,7 +8,7 @@ PollEvBot is a script that automatically answers polls from PollEverywhere. It c
 
 ## Usage
 
-To use the script as is, you need a login/password for PollEverywhere.
+You just need to have a PollEverywhere account to use the script!
 
 First, install `PollEvBot`:
 ```
