@@ -5,11 +5,9 @@ from .endpoints import endpoints
 
 class Bot(requests.Session):
     """
-    A response bot for PollEverywhere.
+    A response bot for multiple-choice polls on PollEverywhere.
 
-    Provides an automated response system for multiple-choice polls
-    on https://www.pollev.com. Identifies and submits correct
-    responses to polls in real-time by parsing response metadata.
+    Identifies and submits correct responses to polls in real-time by parsing response metadata.
     Submits a random response if a poll does not specify a correct option.
 
     """
@@ -38,13 +36,13 @@ class Bot(requests.Session):
             if self.organization == 'uw':
                 self._uw_login()
             else:
-                self._standard_login()
+                self._pollev_login()
         except AssertionError:
             exit("Your username or password was incorrect.")
 
         print("Login successful.")
 
-    def _standard_login(self):
+    def _pollev_login(self):
         """
         Logs into PollEv.
 
@@ -105,11 +103,13 @@ class Bot(requests.Session):
         If the poll host is not affiliated with UW, PollEv will return
         a firehose token with a null value.
         """
-        # Before issuing a token, AWS checks for two visitor cookies that PollEverywhere generates using js.
-        # They are random uuids.
+        # Before issuing a token, AWS checks for two visitor cookies that
+        # PollEverywhere generates using js. They are random uuids.
         self.cookies['pollev_visitor'] = self.generate_uuid()
         self.cookies['pollev_visit'] = self.generate_uuid()
-        r = self.get(endpoints['firehose_auth'].format(host=self.poll_host, timestamp=self.timestamp))
+        r = self.get(endpoints['firehose_auth'].format(
+            host=self.poll_host, timestamp=self.timestamp)
+        )
         return r.json()['firehose_token']
 
     def has_open_poll(self, firehose_token=None):
@@ -186,10 +186,10 @@ class Bot(requests.Session):
         r = self.post(endpoints['respond_to_poll'].format(uid=self.uid, id=answer_id),
                       headers={'x-csrf-token': self.get_csrf_token()},
                       data={'accumulator_id': answer_id, 'poll_id': poll_data['id']})
-        self._print_results(poll_data, r, answer_id, has_correct_ans)
+        self.print_results(poll_data, r, answer_id, has_correct_ans)
 
     @staticmethod
-    def _print_results(poll_data, response, answer_id, has_correct_ans):
+    def print_results(poll_data, response, answer_id, has_correct_ans):
         correct_ans_index = answer_id - poll_data['options'][0]['id']
 
         print("\nPoll Title: " + poll_data['title'] + "\n")
@@ -198,21 +198,27 @@ class Bot(requests.Session):
             print("\t1. The host has locked this poll and is not accepting responses at this time.")
             print("\t2. You have already submitted a response.")
         elif has_correct_ans:
-            print("The correct answer to this question is option " + str(correct_ans_index + 1) + ": "
-                  + poll_data['options'][correct_ans_index]['humanized_value'] + ".")
+            print("The correct answer to this question is option {}: {}.".format(
+                str(correct_ans_index + 1), poll_data['options'][correct_ans_index]['humanized_value'])
+            )
             print("Successfully selected option " + str(correct_ans_index + 1) + "!")
         else:
             print("The host did not specify a correct answer for this question. ")
-            print("Successfully selected option 1: {}!".format(str(poll_data['options'][0]['humanized_value'])))
+            print("Successfully selected option 1: {}!".format(
+                str(poll_data['options'][0]['humanized_value']))
+            )
         print()
 
     def run(self, delay=5, wait_to_respond=5, clear_responses=True):
         """
         Runs the script.
 
-        :param delay: Specifies how long the script will wait between queries to check if a poll is open (seconds).
-        :param wait_to_respond: Specifies how long the script will wait to respond to an open poll (seconds).
-        :param clear_responses: If true, clears any previous responses sent by the user before submitting a response.
+        :param delay: Specifies how long the script will wait between queries
+                        to check if a poll is open (seconds).
+        :param wait_to_respond: Specifies how long the script will wait to
+                        respond to an open poll (seconds).
+        :param clear_responses: If true, clears any previous responses sent
+                        by the user before submitting a response.
         """
         from itertools import count
 
