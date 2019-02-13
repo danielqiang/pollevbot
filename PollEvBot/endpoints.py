@@ -3,7 +3,7 @@ endpoints = {
 
     # MyUW Login
     'uw_login': 'https://idp.u.washington.edu/idp/profile/SAML2/'
-                'Redirect/SSO;jsessionid={session_id}.idp03?execution=e1s1',
+                'Redirect/SSO;jsessionid={id}.idp03?execution=e1s1',
     'uw_saml': 'https://www.polleverywhere.com/auth/washington?'
                'redirect=https%3A%2F%2Fpollev.com%2F&token_required=false',
     'uw_callback': 'https://www.polleverywhere.com/auth/washington/callback',

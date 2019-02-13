@@ -105,3 +105,8 @@ venv.bak/
 
 .idea/
 local.py
+test.py
+setup.py
+/build
+/dist
+/PollEvBot.egg-info

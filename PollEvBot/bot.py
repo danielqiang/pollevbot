@@ -23,15 +23,14 @@ class Bot(requests.Session):
         self.timestamp = round(time.time() * 1000)
         self.headers = {'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                                       "(KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36"}
-        # Unique id for current poll
+        # Unique id for current poll session
         self.uid = None
 
     def login(self):
         """
         Logs into PollEv. Exits if login fails.
-
-        Upon successful login, PollEv sets a session_id cookie.
         """
+        # Upon successful login, PollEv sets a session_id cookie.
         try:
             if self.organization == 'uw':
                 self._uw_login()
@@ -40,7 +39,7 @@ class Bot(requests.Session):
         except AssertionError:
             exit("Your username or password was incorrect.")
 
-        print("Login successful.")
+        print("Login successful.\n")
 
     def _pollev_login(self):
         """
@@ -67,19 +66,22 @@ class Bot(requests.Session):
         r = self.get(endpoints['uw_saml'])
         soup = bs.BeautifulSoup(r.text, "html.parser")
         session_id = re.findall('jsessionid=(.*)\.', soup.find('form', id='idplogindiv')['action'])
-        r = self.post(endpoints['uw_login'].format(session_id=session_id),
-                      data={'j_username': self.username, 'j_password': self.password,
-                            '_eventId_proceed': 'Sign in'})
+        r = self.post(endpoints['uw_login'].format(id=session_id),
+                      data={
+                          'j_username': self.username,
+                          'j_password': self.password,
+                          '_eventId_proceed': 'Sign in'
+                      })
         soup = bs.BeautifulSoup(r.text, "html.parser")
         saml_response = soup.find('input', type='hidden')
 
         assert saml_response
 
         r = self.post(endpoints['uw_callback'], data={'SAMLResponse': saml_response['value']})
-        self.auth_token = re.findall('pe_auth_token=(.*)', r.url)[0]
+        auth_token = re.findall('pe_auth_token=(.*)', r.url)[0]
         self.post(endpoints['uw_auth_token'],
                   headers={'x-csrf-token': self.get_csrf_token()},
-                  data={'token': self.auth_token})
+                  data={'token': auth_token})
 
     def get_csrf_token(self):
         return self.get(endpoints['csrf'].format(timestamp=self.timestamp)).json()['token']
@@ -122,7 +124,7 @@ class Bot(requests.Session):
         """
         import json
 
-        # All polls for PollEv are directed to Firehose. For some hosts affiliated with certain
+        # All polls for PollEv are directed through Amazon Firehose. For hosts affiliated with certain
         # organizations (e.g. UW), Firehose issues an authentication token.
         # Firehose does not issue a token for hosts unaffiliated with an organization.
         try:
@@ -160,11 +162,13 @@ class Bot(requests.Session):
                       headers={'x-http-method-override': 'DELETE',
                                'x-csrf-token': self.get_csrf_token()})
 
-    def answer_poll(self):
+    def answer_poll(self, randomize=True):
         """
         Given that the user is logged in and the poll is open, submits a response to the poll.
         If the poll host specified a correct option, submit the correct option as a response.
-        Otherwise, submit a random option.
+        Otherwise, submit the first option or a random option.
+
+        :param randomize: If true, submit a random response when no correct option is specified.
         """
         from random import randint
 
@@ -172,10 +176,10 @@ class Bot(requests.Session):
             uid=self.uid, timestamp=self.timestamp)
         ).json()['multiple_choice_poll']
 
-        rand_index = randint(0, len(poll_data['options']) - 1)
+        index = randint(0, len(poll_data['options']) - 1) if randomize else 0
         has_correct_ans = False
-        # Each response to a poll has a unique id.
-        answer_id = poll_data['options'][rand_index]['id']
+        # Each possible response in a poll has a unique id.
+        answer_id = poll_data['options'][index]['id']
 
         for option in poll_data['options']:
             # If a correct answer exists, submit that one
@@ -231,15 +235,15 @@ class Bot(requests.Session):
 
         while True:
             c = count(1)
-            while not self.has_open_poll(token):
+            while not self.has_open_poll(firehose_token=token):
                 print("\r{} has not opened any new polls. Waiting {} seconds before checking again. "
                       "Checked {} times so far.".format(self.poll_host.capitalize(), delay, next(c)),
                       end='')
                 time.sleep(delay)
             if wait_to_respond > 0:
                 print("{} has opened a new poll! Waiting {} seconds before responding.".format(
-                    self.poll_host.capitalize(), wait_to_respond
-                ))
+                    self.poll_host.capitalize(), wait_to_respond)
+                )
                 time.sleep(wait_to_respond)
             if clear_responses:
                 self.clear_responses()
