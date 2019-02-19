@@ -11,6 +11,7 @@ class Bot(requests.Session):
     Submits a random response if a poll does not specify a correct option.
 
     """
+
     def __init__(self, username, password, poll_host, organization=None):
         super().__init__()
         self.username = username
@@ -18,11 +19,12 @@ class Bot(requests.Session):
         self.poll_host = poll_host.lower()
         self.organization = organization.lower() if organization else None
 
+        self.headers = {'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                                      "(KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36"}
+
         # PollEv requires a timestamp (milliseconds since epoch)
         # on most requests.
         self.timestamp = round(time.time() * 1000)
-        self.headers = {'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                                      "(KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36"}
         # Unique id for current poll session
         self.uid = None
 
@@ -50,6 +52,7 @@ class Bot(requests.Session):
         r = self.post(endpoints['login'],
                       headers={'x-csrf-token': self.get_csrf_token()},
                       data={'login': self.username, 'password': self.password})
+        # If login is successful, PollEv sends an empty HTTP response.
         assert not r.text
 
     def _uw_login(self):
