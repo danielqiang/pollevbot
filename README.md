@@ -26,7 +26,7 @@ host = 'PollEverywhere URL Extension e.g. "uwpsych"'
 
 And run the script.
 ```python
-from PollEvBot.src import Bot
+from PollEvBot import Bot
 
 user = 'My Username'
 password = 'My Password'
