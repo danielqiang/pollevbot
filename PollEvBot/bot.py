@@ -201,7 +201,7 @@ class Bot(requests.Session):
         """
         Informational terminal output.
         """
-        correct_ans_index = answer_id - poll_data['options'][0]['id']
+        ans_index = answer_id - poll_data['options'][0]['id']
 
         print("\nPoll Title: " + poll_data['title'] + "\n")
         if response.status_code == 422:
@@ -210,13 +210,13 @@ class Bot(requests.Session):
             print("\t2. You have already submitted a response.")
         elif has_correct_ans:
             print("The correct answer to this question is option {}: {}.".format(
-                str(correct_ans_index + 1), poll_data['options'][correct_ans_index]['humanized_value'])
+                str(ans_index + 1), poll_data['options'][ans_index]['humanized_value'])
             )
-            print("Successfully selected option " + str(correct_ans_index + 1) + "!")
+            print("Successfully selected option " + str(ans_index + 1) + "!")
         else:
             print("The host did not specify a correct answer for this question. ")
-            print("Successfully selected option 1: {}!".format(
-                str(poll_data['options'][0]['humanized_value']))
+            print("Successfully selected option {}: {}!".format(
+                str(ans_index + 1), str(poll_data['options'][0]['humanized_value']))
             )
         print()
 
