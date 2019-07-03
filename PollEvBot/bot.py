@@ -27,6 +27,8 @@ class Bot(requests.Session):
         self.timestamp = round(time.time() * 1000)
         # Unique id for current poll session
         self.uid = None
+        # Check if we've answered the current poll.
+        self.answered = False
 
     def login(self):
         """
@@ -65,7 +67,6 @@ class Bot(requests.Session):
         import re
 
         # UW implements a SAML-based Single-Sign-On protocol for user authentication.
-        # When user authentication fails, UW will send an empty SAML response.
         r = self.get(endpoints['uw_saml'])
         soup = bs.BeautifulSoup(r.text, "html.parser")
         session_id = re.findall('jsessionid=(.*)\.', soup.find('form', id='idplogindiv')['action'])
@@ -78,6 +79,7 @@ class Bot(requests.Session):
         soup = bs.BeautifulSoup(r.text, "html.parser")
         saml_response = soup.find('input', type='hidden')
 
+        # When user authentication fails, UW will send an empty SAML response.
         assert saml_response
 
         r = self.post(endpoints['uw_callback'], data={'SAMLResponse': saml_response['value']})
@@ -107,6 +109,8 @@ class Bot(requests.Session):
         Given that the user is logged in, retrieve a firehose token.
         If the poll host is not affiliated with UW, PollEv will return
         a firehose token with a null value.
+
+        Exits if the specified poll host is not found.
         """
         # Before issuing a token, AWS checks for two visitor cookies that
         # PollEverywhere generates using js. They are random uuids.
@@ -115,6 +119,9 @@ class Bot(requests.Session):
         r = self.get(endpoints['firehose_auth'].format(
             host=self.poll_host, timestamp=self.timestamp)
         )
+
+        if "Presenter not found" in r.text:
+            exit("Poll host {} not found. Please check your spelling and try again.".format(self.poll_host))
         return r.json()['firehose_token']
 
     def has_open_poll(self, firehose_token=None):
@@ -145,25 +152,10 @@ class Bot(requests.Session):
         # Firehose either doesn't respond or responds with no data if no poll is open.
         except (requests.exceptions.ReadTimeout, KeyError):
             return False
-        # Ignore polls we've already answered.
-        if self.uid == uid:
-            return False
-
-        self.uid = uid
-        return True
-
-    def clear_responses(self):
-        """
-        Given that the user is logged in and the poll is open,
-        clears any previous responses sent by the user.
-        """
-        r = self.get(endpoints['check_responses'].format(uid=self.uid, timestamp=self.timestamp),
-                     headers={'accept': 'application/json'})
-        # If the poll is currently unanswered, the response json is empty.
-        if r.json():
-            self.post(endpoints['clear_responses'].format(id=r.json()[0]['id']),
-                      headers={'x-http-method-override': 'DELETE',
-                               'x-csrf-token': self.get_csrf_token()})
+        if self.uid != uid:
+            self.answered = False
+            self.uid = uid
+        return not self.answered
 
     def answer_poll(self, randomize=True):
         """
@@ -204,38 +196,54 @@ class Bot(requests.Session):
         ans_index = answer_id - poll_data['options'][0]['id']
 
         print("\nPoll Title: " + poll_data['title'] + "\n")
-        if response.status_code == 422:
-            print("Could not submit a response. This could be because:")
-            print("\t1. The host has locked this poll and is not accepting responses at this time.")
-            print("\t2. You have already submitted a response.")
-        elif has_correct_ans:
+        if has_correct_ans:
             print("The correct answer to this question is option {}: {}.".format(
                 str(ans_index + 1), poll_data['options'][ans_index]['humanized_value'])
             )
-            print("Successfully selected option " + str(ans_index + 1) + "!")
         else:
             print("The host did not specify a correct answer for this question. ")
+        print()
+        if "This poll is currently locked" in response.text:
+            print("Could not submit a response. The host has locked this poll "
+                  "and is not accepting responses at this time.")
+        elif "You can't respond to this poll any more" in response.text:
+            print("Could not respond to the poll; you have already submitted a response.")
+        else:
             print("Successfully selected option {}: {}!".format(
                 str(ans_index + 1), str(poll_data['options'][0]['humanized_value']))
             )
         print()
 
-    def run(self, delay=5, wait_to_respond=5, clear_responses=True):
+    def run(self, start="12 AM", delay=5, rand_delay=0, wait_to_respond=5):
         """
         Runs the script.
 
+        :param start: Start time for class. If given, the bot will wait until
+                        the given start time to begin querying PollEverywhere.
+                        Note: Most string formats will work here, e.g. '12 AM', '3 pm',
+                        '1:49:15', '14:28'. See the docs for dateutil.parser()
+                        for more details.
         :param delay: Specifies how long the script will wait between queries
                         to check if a poll is open (seconds).
+        :param rand_delay: Specifies the spread of possible delay times. Ex. delay = 5,
+                        rand_delay = 5 -> delay = random.uniform(0, 10). Default is 0 (no randomization).
         :param wait_to_respond: Specifies how long the script will wait to
                         respond to an open poll (seconds).
-        :param clear_responses: If true, clears any previous responses sent
-                        by the user before submitting a response.
         """
         from itertools import count
+        from dateutil import parser
+        from datetime import datetime
+        from random import uniform
 
         self.login()
         token = self.get_firehose_token()
 
+        start = parser.parse(start)
+        while start > datetime.now():
+            print("\rWaiting for class to start at {}. It is currently {}.".format(
+                start.time(), datetime.now().time()), end=''
+            )
+            time.sleep(1)
         while True:
             c = count(1)
             while not self.has_open_poll(firehose_token=token):
@@ -244,10 +252,9 @@ class Bot(requests.Session):
                       end='')
                 time.sleep(delay)
             if wait_to_respond > 0:
+                rand_delay = uniform(max(-wait_to_respond, -rand_delay), rand_delay)
                 print("{} has opened a new poll! Waiting {} seconds before responding.".format(
-                    self.poll_host.capitalize(), wait_to_respond)
+                    self.poll_host.capitalize(), wait_to_respond + rand_delay)
                 )
-                time.sleep(wait_to_respond)
-            if clear_responses:
-                self.clear_responses()
+                time.sleep(wait_to_respond + rand_delay)
             self.answer_poll()

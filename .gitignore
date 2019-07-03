@@ -110,3 +110,4 @@ setup.py
 /build
 /dist
 /PollEvBot.egg-info
+/dev
