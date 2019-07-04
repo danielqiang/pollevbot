@@ -111,3 +111,4 @@ setup.py
 /dist
 /PollEvBot.egg-info
 /dev
+.pypirc

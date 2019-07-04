@@ -214,15 +214,10 @@ class Bot(requests.Session):
             )
         print()
 
-    def run(self, start="12 AM", delay=5, rand_delay=0, wait_to_respond=5):
+    def run(self, delay=5, rand_delay=0, wait_to_respond=5):
         """
         Runs the script.
 
-        :param start: Start time for class. If given, the bot will wait until
-                        the given start time to begin querying PollEverywhere.
-                        Note: Most string formats will work here, e.g. '12 AM', '3 pm',
-                        '1:49:15', '14:28'. See the docs for dateutil.parser()
-                        for more details.
         :param delay: Specifies how long the script will wait between queries
                         to check if a poll is open (seconds).
         :param rand_delay: Specifies the spread of possible delay times. Ex. delay = 5,
@@ -231,19 +226,11 @@ class Bot(requests.Session):
                         respond to an open poll (seconds).
         """
         from itertools import count
-        from dateutil import parser
-        from datetime import datetime
         from random import uniform
 
         self.login()
         token = self.get_firehose_token()
 
-        start = parser.parse(start)
-        while start > datetime.now():
-            print("\rWaiting for class to start at {}. It is currently {}.".format(
-                start.time(), datetime.now().time()), end=''
-            )
-            time.sleep(1)
         while True:
             c = count(1)
             while not self.has_open_poll(firehose_token=token):
