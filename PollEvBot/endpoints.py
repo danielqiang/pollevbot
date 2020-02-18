@@ -20,9 +20,8 @@ endpoints = {
                            'current.json?firehose_token={token}&last_message_sequence=0&_={timestamp}',
     'firehose_no_token': 'https://firehose-production.polleverywhere.com/users/{host}/activity/'
                          'current.json?last_message_sequence=0&_={timestamp}',
-    'poll_data': 'https://pollev.com/proxy/api/polls/{uid}?_={timestamp}',
-    'respond_to_poll': 'https://pollev.com/proxy/multiple_choice_polls/{uid}/options/'
-                       '{id}/results.json?include_confirmation_message=1',
+    'poll_data': 'https://pollev.com/proxy/api/participant/multiple_choice_polls/{uid}?include=collection',
+    'respond_to_poll': 'https://pollev.com/proxy/api/participant/multiple_choice_polls/{uid}/results',
     'clear_responses': 'https://pollev.com/proxy/api/results/{id}',
     'check_responses': 'https://pollev.com/proxy/my/results?permalinks%5B%5D={uid}&'
                        'per_page=500&include_archived=false&_={timestamp}'
