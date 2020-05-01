@@ -14,12 +14,13 @@ def run():
 
 
 def main():
-    scheduler = BlockingScheduler()
-    scheduler.add_job(run, 'cron',
-                      day_of_week=os.environ['DAY_OF_WEEK'],
-                      hour=os.environ['HOUR'],
-                      minute=os.environ['MINUTE'])
-    scheduler.start()
+    # scheduler = BlockingScheduler()
+    # scheduler.add_job(run, 'cron',
+    #                   day_of_week=os.environ['DAY_OF_WEEK'],
+    #                   hour=os.environ['HOUR'],
+    #                   minute=os.environ['MINUTE'])
+    # scheduler.start()
+    run()
 
 
 if __name__ == '__main__':
