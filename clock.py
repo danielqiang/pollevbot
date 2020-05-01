@@ -1,6 +1,9 @@
 import os
+import logging
 from pollevbot import PollBot
 from apscheduler.schedulers.blocking import BlockingScheduler
+
+logger = logging.getLogger(__name__)
 
 
 def run():
@@ -14,6 +17,8 @@ def run():
 
 
 def main():
+    logger.info("Starting blocking scheduler.")
+
     scheduler = BlockingScheduler()
     scheduler.add_job(run, 'cron',
                       day_of_week=os.environ['DAY_OF_WEEK'],
