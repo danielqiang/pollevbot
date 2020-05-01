@@ -188,26 +188,22 @@ class PollBot:
             r = self.session.get(url, timeout=0.3)
             # Unique id for poll
             poll_id = json.loads(r.json()['message'])['uid']
-
-            if poll_id in self.answered_polls:
-                return None
-            else:
-                self.answered_polls.add(poll_id)
-                return poll_id
         # Firehose either doesn't respond or responds with no data if no poll is open.
         except (requests.exceptions.ReadTimeout, KeyError):
             return None
+        if poll_id in self.answered_polls:
+            return None
+        else:
+            self.answered_polls.add(poll_id)
+            return poll_id
 
-    def answer_poll(self, poll_id) -> Optional[dict]:
+    def answer_poll(self, poll_id) -> dict:
         import random
 
         url = endpoints['poll_data'].format(uid=poll_id)
         poll_data = self.session.get(url).json()
 
-        if self.min_option is None:
-            options = poll_data['options'][self.min_option:]
-        else:
-            options = poll_data['options'][self.min_option:self.max_option]
+        options = poll_data['options'][self.min_option:self.max_option]
         try:
             option_id = random.choice(options)['id']
         except IndexError:
@@ -216,7 +212,7 @@ class PollBot:
                          f'{len(poll_data["options"])} options.')
             logger.error(f'self.min_option: {self.min_option}, '
                          f'self.max_option: {self.max_option}')
-            return None
+            return {}
         r = self.session.post(
             endpoints['respond_to_poll'].format(uid=poll_id),
             headers={'x-csrf-token': self._get_csrf_token()},

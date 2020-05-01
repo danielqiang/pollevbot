@@ -2,6 +2,7 @@
 
 pollevbot is a bot that automatically responds to polls at [pollev.com](https://pollev.com/). It continually checks if a specified poll user has opened any polls. Once a poll has been opened, the bot submits a random response. 
 
+Requires Python 3.7 or later.
 ## Dependencies
 
 [Requests](https://github.com/requests/requests), [BeautifulSoup](https://github.com/waylan/beautifulsoup)
