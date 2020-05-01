@@ -1,1 +1,1 @@
-web: python herokuapp.py
+web: python clock.py
