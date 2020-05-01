@@ -1,5 +1,6 @@
 import requests
 import logging
+import time
 from typing import Optional
 from .endpoints import endpoints
 
@@ -26,7 +27,7 @@ class PollBot:
     def __init__(self, user: str, password: str, host: str,
                  login_type: str = 'uw', min_option: int = 0,
                  max_option: int = None, closed_wait: float = 5,
-                 open_wait: float = 5):
+                 open_wait: float = 5, lifetime: float = float('inf')):
         """
         Constructor. Creates a PollBot that answers polls on pollev.com.
 
@@ -42,6 +43,8 @@ class PollBot:
                         before checking again.
         :param open_wait: Time to wait in seconds if a poll is open
                         before answering.
+        :param lifetime: Lifetime of this PollBot (in seconds).
+                        If float('inf'), runs forever.
         :raises ValueError: if login_type is not 'uw' or 'pollev'.
         """
         if login_type not in {'uw', 'pollev'}:
@@ -64,6 +67,9 @@ class PollBot:
         self.closed_wait = closed_wait
         self.open_wait = open_wait
 
+        self.lifetime = lifetime
+        self.start_time = time.time()
+
         self.session = requests.Session()
         self.session.headers = {
             'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -80,9 +86,7 @@ class PollBot:
 
     @staticmethod
     def timestamp() -> float:
-        from time import time
-
-        return round(time() * 1000)
+        return round(time.time() * 1000)
 
     def _get_csrf_token(self) -> str:
         url = endpoints['csrf'].format(timestamp=self.timestamp())
@@ -220,10 +224,11 @@ class PollBot:
         )
         return r.json()
 
+    def alive(self):
+        return time.time() <= self.start_time + self.lifetime
+
     def run(self):
         """Runs the script."""
-        from time import sleep
-
         try:
             self.login()
             token = self.get_firehose_token()
@@ -231,16 +236,16 @@ class PollBot:
             logger.error(e)
             return
 
-        while True:
+        while self.alive():
             poll_id = self.get_new_poll_id(token)
 
             if poll_id is None:
                 logger.info(f'`{self.host}` has not opened any new polls. '
                             f'Waiting {self.closed_wait} seconds before checking again.')
-                sleep(self.closed_wait)
+                time.sleep(self.closed_wait)
             else:
                 logger.info(f"{self.host} has opened a new poll! "
                             f"Waiting {self.open_wait} seconds before responding.")
-                sleep(self.open_wait)
+                time.sleep(self.open_wait)
                 r = self.answer_poll(poll_id)
                 logger.info(f'Received response: {r}')
