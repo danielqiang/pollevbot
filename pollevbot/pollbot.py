@@ -121,7 +121,6 @@ class PollBot:
         r = self.session.get(endpoints['uw_saml'])
         soup = bs.BeautifulSoup(r.text, "html.parser")
         data = soup.find('form', id='idplogindiv')['action']
-        logger.info(f"DATA: {data}")
         session_id = re.findall(r'jsessionid=(.*)\.', data)
 
         r = self.session.post(endpoints['uw_login'].format(id=session_id),
