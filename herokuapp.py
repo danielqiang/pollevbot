@@ -22,7 +22,7 @@ def main():
     host = os.environ['POLLHOST']
 
     if check_day():
-        with PollBot(user, password, host) as bot:
+        with PollBot(user, password, host, lifetime=3600) as bot:
             bot.run()
     else:
         logger.info("pollevbot is not configured to run today. Exiting.")
