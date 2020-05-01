@@ -42,18 +42,9 @@ with PollBot(user, password, host) as bot:
 Alternatively, you can clone this repo, set your login credentials in 
 [main.py](pollevbot/main.py) and run it from there.
 
-## Deploying to Heroku
+## Heroku
 
-First, clone this repo:
-```bash
-git clone https://github.com/danielqiang/pollevbot.git
-```
-
-Install dependencies:
-```bash
-pip install -r requirements.txt
-```
-
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/danielqiang/pollevbot)
 
 
 ## Disclaimer
