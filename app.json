@@ -1,0 +1,34 @@
+{
+    "name": "pollevbot",
+    "description": "A response bot for multiple-choice polls on PollEverywhere",
+    "repository": "https://github.com/danielqiang/pollevbot",
+    "env": {
+        "USERNAME": {
+            "description": "PollEv account username"
+        },
+        "PASSWORD": {
+            "description": "PollEv account password"
+        },
+        "POLLHOST": {
+            "description": "PollEv host name"
+        },
+        "DAY_OF_WEEK": {
+            "description": "Cron string specifying weekdays to run pollevbot"
+        },
+        "HOUR": {
+            "description": "Cron string specifying which hours to run pollevbot"
+        },
+        "MINUTE": {
+            "description": "Cron string specifying what minutes to run pollevbot"
+        },
+        "LOGIN_TYPE": {
+            "description": "Login protocol to use (either 'uw' or 'pollev')",
+            "required": false
+        },
+        "LIFETIME": {
+            "description": "Time to run pollevbot before terminating (in seconds).",
+            "required": false,
+            "value": "3600"
+        }
+    }
+}
