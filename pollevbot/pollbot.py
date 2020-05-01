@@ -50,7 +50,7 @@ class PollBot:
         if login_type not in {'uw', 'pollev'}:
             raise ValueError(f"'{self.login_type}' is not a supported login type. "
                              f"Use 'uw' or 'pollev'.")
-        if login_type == 'pollev' and user.strip().endswith('@uw.edu'):
+        if login_type == 'pollev' and user.strip().lower().endswith('@uw.edu'):
             logger.warning(f"{user} looks like a UW email. "
                            f"Use login_type='uw' to log in with MyUW.")
 
@@ -205,15 +205,14 @@ class PollBot:
 
         url = endpoints['poll_data'].format(uid=poll_id)
         poll_data = self.session.get(url).json()
-
         options = poll_data['options'][self.min_option:self.max_option]
         try:
             option_id = random.choice(options)['id']
         except IndexError:
             # `options` was empty
             logger.error(f'Could not answer poll: poll only has '
-                         f'{len(poll_data["options"])} options.')
-            logger.error(f'self.min_option: {self.min_option}, '
+                         f'{len(poll_data["options"])} options but '
+                         f'self.min_option was {self.min_option} and '
                          f'self.max_option: {self.max_option}')
             return {}
         r = self.session.post(
