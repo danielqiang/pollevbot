@@ -1,20 +1,16 @@
-# PollEvBot
+# pollevbot
 
-PollEvBot is a bot that automatically responds to polls from PollEverywhere. It continually checks if a specified poll user has opened any polls. Once a poll has been opened, the bot identifies and submits the correct response to PollEverywhere. It submits a random option if the poll does not have a specified correct response.
+pollevbot is a bot that automatically responds to polls at [pollev.com](https://pollev.com/). It continually checks if a specified poll user has opened any polls. Once a poll has been opened, the bot submits a random response. 
 
 ## Dependencies
 
 [Requests](https://github.com/requests/requests), [BeautifulSoup](https://github.com/waylan/beautifulsoup)
 
-## Requirements
-
-A [PollEverywhere account](https://www.pollev.com). That's it. :)
-
 ## Usage
 
-First, install `PollEvBot`:
+First, install `pollevbot`:
 ```
-pip install PollEvBot
+pip install pollevbot
 ```
 
 Set your username, password, and desired poll host:
@@ -26,17 +22,18 @@ host = 'PollEverywhere URL Extension e.g. "uwpsych"'
 
 And run the script.
 ```python
-from PollEvBot import Bot
+from pollevbot import PollBot
 
 user = 'My Username'
 password = 'My Password'
 host = 'PollEverywhere URL Extension e.g. "uwpsych"'
 
-# If you're not using a UW PollEv account, just omit the 'organization' argument
-with Bot(user, password, host, organization='uw') as bot:
+# If you're using a non-UW PollEv account,
+# add the argument "login_type='pollev'"
+with PollBot(user, password, host) as bot:
     bot.run()
 ```
-Alternatively, you can input your login credentials into main.py and run it from there.
+Alternatively, you can set your login credentials in [main.py](pollevbot/main.py) and run it from there.
 
 ## Disclaimer
 
