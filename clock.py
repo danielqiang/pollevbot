@@ -9,7 +9,7 @@ def run():
     password = os.environ['PASSWORD']
     host = os.environ['POLLHOST']
 
-    with PollBot(user, password, host, closed_wait=1000) as bot:
+    with PollBot(user, password, host) as bot:
         bot.run()
 
 
