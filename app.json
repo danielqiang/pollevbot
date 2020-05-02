@@ -23,11 +23,10 @@
         },
         "LOGIN_TYPE": {
             "description": "Login protocol to use (either 'uw' or 'pollev')",
-            "required": false
+            "value": "uw"
         },
         "LIFETIME": {
-            "description": "Time to run pollevbot before terminating (in seconds).",
-            "required": false,
+            "description": "Time to run pollevbot before terminating (in seconds). Set to 'inf' to run forever.",
             "value": "3600"
         }
     }
