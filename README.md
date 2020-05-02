@@ -71,11 +71,11 @@ variables as follows:
 * `DAY_OF_WEEK`: `mon,wed`
 * `HOUR`: `18`
 * `LIFETIME`: `3600`
-* `LOGIN_TYPE:` `uw`
-* `MINUTE:` `30`
-* `PASSWORD:` `yourpassword`
-* `POLLHOST:` `teacher123`
-* `USERNAME:` `yourusername`
+* `LOGIN_TYPE`: `uw`
+* `MINUTE`: `30`
+* `PASSWORD`: `yourpassword`
+* `POLLHOST`: `teacher123`
+* `USERNAME`: `yourusername`
 
 Then click `Deploy App` and wait for the app to finish building. 
 **pollevbot** is now deployed to Heroku! 
