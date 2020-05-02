@@ -39,8 +39,8 @@ def run():
     user = os.environ['USERNAME']
     password = os.environ['PASSWORD']
     host = os.environ['POLLHOST']
-    login_type = os.environ.get('LOGIN_TYPE', 'uw')
-    lifetime = float(os.environ.get('LIFETIME', 'inf'))
+    login_type = os.environ['LOGIN_TYPE']
+    lifetime = float(os.environ['LIFETIME'])
 
     with PollBot(user, password, host, login_type=login_type, lifetime=lifetime) as bot:
         bot.run()

@@ -6,11 +6,9 @@ Required config variables:
     - USERNAME
     - PASSWORD
     - POLLHOST
-    - DAY_OF_WEEK (cron string)
-
-Optional config variables:
     - LOGIN_TYPE ('uw' or 'pollev')
     - LIFETIME
+    - DAY_OF_WEEK (cron string)
 
 Since Heroku Scheduler can only schedule programs
 to run at a certain time every day, this program
@@ -55,8 +53,8 @@ def main():
     user = os.environ['USERNAME']
     password = os.environ['PASSWORD']
     host = os.environ['POLLHOST']
-    login_type = os.environ.get('LOGIN_TYPE', 'uw')
-    lifetime = float(os.environ.get('LIFETIME', 'inf'))
+    login_type = os.environ['LOGIN_TYPE']
+    lifetime = float(os.environ['LIFETIME'])
 
     if check_day():
         with PollBot(user, password, host,
