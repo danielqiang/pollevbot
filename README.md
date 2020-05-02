@@ -44,12 +44,15 @@ Alternatively, you can clone this repo, set your login credentials in
 
 ## Heroku
 
-**pollevbot** can be configured to run at scheduled dates/times with [Heroku](http://heroku.com/). 
+**pollevbot** can be configured to run at scheduled dates/times with [Heroku](http://heroku.com/):
+
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/danielqiang/pollevbot)
+
+##### Example #####
 
 Suppose you want to answer polls made by poll host `teacher123` every Monday and Wednesday 
 from 11:30 AM to 12:30 PM in your timezone on your UW account. To do this, first deploy to Heroku:
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/danielqiang/pollevbot)
 
 Set the config variables as follows:
 
