@@ -44,11 +44,25 @@ Alternatively, you can clone this repo, set your login credentials in
 
 ## Heroku
 
-**pollevbot** can be configured to run at scheduled dates/times (UTC timezone) with [Heroku](http://heroku.com/):
+**pollevbot** can be scheduled to run at specific dates/times (UTC timezone) using [Heroku](http://heroku.com/):
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/danielqiang/pollevbot)
 
-#### Example ####
+Required configuration variables:
+
+* `DAY_OF_WEEK`: [cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) string
+specifying weekdays to run pollevbot (e.g. `mon,wed` is Monday and Wednesday).
+* `HOUR=18`: [cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) string
+(UTC time) specifying which hours to run pollevbot.
+* `LIFETIME`: Time to run pollevbot before terminating (in seconds). Set to `inf` to run forever.
+* `LOGIN_TYPE`: Login protocol to use (either `uw` or `pollev`).
+* `MINUTE`: [cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) string
+specifying what minutes to run pollevbot.
+* `PASSWORD`: PollEv account password.
+* `POLLHOST`: PollEv host name.
+* `USERNAME`: PollEv account username.
+
+**Example**
 
 Suppose you want to answer polls made by poll host `teacher123` every Monday and Wednesday 
 from 11:30 AM to 12:30 PM PST (6:30 PM to 7:30 PM UTC) in your timezone on your UW account. To do this, set the config 
@@ -62,9 +76,6 @@ variables as follows:
 * `PASSWORD=yourpassword`
 * `POLLHOST=teacher123`
 * `USERNAME=yourusername`
-
-**Note**: The variables (`DAY_OF_WEEK`, `HOUR`, `MINUTE`) are 
-[cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) strings.
 
 Then click `Deploy App` and wait for the app to finish building. 
 **pollevbot** is now deployed to Heroku! 
