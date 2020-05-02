@@ -21,6 +21,7 @@ for more info.
 
 import os
 import logging
+import pytz
 from pollevbot import PollBot
 from apscheduler.schedulers.blocking import BlockingScheduler
 
@@ -47,7 +48,7 @@ def run():
 def main():
     logger.info("Starting blocking scheduler.")
 
-    scheduler = BlockingScheduler()
+    scheduler = BlockingScheduler(timezone=pytz.utc)
     scheduler.add_job(run, 'cron',
                       day_of_week=os.environ['DAY_OF_WEEK'],
                       hour=os.environ['HOUR'],
