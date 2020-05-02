@@ -52,7 +52,7 @@ Required configuration variables:
 
 * `DAY_OF_WEEK`: [cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) string
 specifying weekdays to run pollevbot (e.g. `mon,wed` is Monday and Wednesday).
-* `HOUR=18`: [cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) string
+* `HOUR`: [cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) string
 (UTC time) specifying which hours to run pollevbot.
 * `LIFETIME`: Time to run pollevbot before terminating (in seconds). Set to `inf` to run forever.
 * `LOGIN_TYPE`: Login protocol to use (either `uw` or `pollev`).
@@ -84,5 +84,5 @@ Then click `Deploy App` and wait for the app to finish building.
 
 I do not promote or condone the usage of this script for any kind of academic misconduct 
 or dishonesty. I wrote this script for the sole purpose of educating myself on cybersecurity 
-and web protocols, and cannot be held liable for any indirect, incidental, consequential, 
+and web protocol automation, and cannot be held liable for any indirect, incidental, consequential, 
 special, or exemplary damages arising out of or in connection with the usage of this script.
