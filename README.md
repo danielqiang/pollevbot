@@ -68,14 +68,14 @@ Suppose you want to answer polls made by poll host `teacher123` every Monday and
 from 11:30 AM to 12:30 PM PST (6:30 PM to 7:30 PM UTC) in your timezone on your UW account. To do this, set the config 
 variables as follows:
 
-* `DAY_OF_WEEK=mon,wed`
-* `HOUR=18`
-* `LIFETIME=3600`
-* `LOGIN_TYPE=uw`
-* `MINUTE=30`
-* `PASSWORD=yourpassword`
-* `POLLHOST=teacher123`
-* `USERNAME=yourusername`
+* `DAY_OF_WEEK`: `mon,wed`
+* `HOUR`: `18`
+* `LIFETIME`: `3600`
+* `LOGIN_TYPE:` `uw`
+* `MINUTE:` `30`
+* `PASSWORD:` `yourpassword`
+* `POLLHOST:` `teacher123`
+* `USERNAME:` `yourusername`
 
 Then click `Deploy App` and wait for the app to finish building. 
 **pollevbot** is now deployed to Heroku! 
