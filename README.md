@@ -44,7 +44,8 @@ Alternatively, you can clone this repo, set your login credentials in
 
 ## Heroku
 
-`pollevbot` can be configured to run at scheduled dates/times with [Heroku](http://heroku.com/). 
+**pollevbot** can be configured to run at scheduled dates/times with [Heroku](http://heroku.com/). 
+
 Suppose you want to answer polls made by poll host `teacher123` every Monday and Wednesday 
 from 11:30 AM to 12:30 PM in your timezone on your UW account. To do this, first deploy to Heroku:
 
@@ -67,7 +68,9 @@ Set the config variables as follows:
 [cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) strings.
 * Your timezone is automatically detected.
 
-Then click `Deploy App`.
+Then click `Deploy App` and wait for the app to finish building. 
+**pollevbot** is now deployed to the Heroku! 
+
 ## Disclaimer
 
 I do not promote or condone the usage of this script for any kind of academic misconduct 

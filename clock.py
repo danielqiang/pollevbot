@@ -11,14 +11,13 @@ Required config variables:
     - LOGIN_TYPE ('uw' or 'pollev')
     - LIFETIME
 
-web.py is a standalone program that schedules and runs
+clock.py is a standalone program that schedules and runs
 pollevbot. It uses APScheduler's Cron triggers to simulate
 cron (Unix util).
 
 See https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html
 for more info.
 """
-
 
 import os
 import logging
