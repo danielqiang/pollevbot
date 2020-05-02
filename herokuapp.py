@@ -23,7 +23,8 @@ import logging
 from datetime import date
 from pollevbot import PollBot
 
-required_vars = {'USERNAME', 'PASSWORD', 'POLLHOST', 'DAY_OF_WEEK'}
+required_vars = {'USERNAME', 'PASSWORD', 'POLLHOST',
+                 'DAY_OF_WEEK', 'LOGIN_TYPE', 'LIFETIME'}
 missing_vars = sorted(required_vars - set(os.environ))
 assert len(missing_vars) == 0, f"Missing required config variables: {missing_vars}"
 
@@ -40,8 +41,6 @@ def check_day():
         'sat': '5',
         'sun': '6'
     }
-    # DAY_OF_WEEK is a cron string, i.e.
-    # '1,3' means run on tuesday and thursday
     day_of_week = [s.strip() for s in os.environ['DAY_OF_WEEK'].split(',')]
     day_of_week = [date_map[s] if s in date_map else s for s in day_of_week]
 

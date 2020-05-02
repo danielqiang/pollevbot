@@ -1,6 +1,6 @@
 from sys import version_info
 
-assert version_info >= (3, 7), "pollevbot requires python 3.7 or later."
+assert version_info >= (3, 7), "pollevbot requires python 3.7 or later"
 
 from .pollbot import PollBot
 import logging

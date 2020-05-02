@@ -8,14 +8,12 @@ Required config variables:
     - DAY_OF_WEEK (cron string)
     - HOUR (cron string)
     - MINUTE (cron string)
-
-Optional config variables:
     - LOGIN_TYPE ('uw' or 'pollev')
     - LIFETIME
 
 web.py is a standalone program that schedules and runs
 pollevbot. It uses APScheduler's Cron triggers to simulate
-the Unix util cron.
+cron (Unix util).
 
 See https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html
 for more info.
@@ -27,7 +25,8 @@ import logging
 from pollevbot import PollBot
 from apscheduler.schedulers.blocking import BlockingScheduler
 
-required_vars = {'USERNAME', 'PASSWORD', 'POLLHOST', 'DAY_OF_WEEK', 'HOUR', 'MINUTE'}
+required_vars = {'USERNAME', 'PASSWORD', 'POLLHOST', 'DAY_OF_WEEK',
+                 'HOUR', 'MINUTE', 'LOGIN_TYPE', 'LIFETIME'}
 missing_vars = sorted(required_vars - set(os.environ))
 assert len(missing_vars) == 0, f"Missing required config variables: {missing_vars}"
 
