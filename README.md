@@ -51,10 +51,8 @@ Alternatively, you can clone this repo, set your login credentials in
 #### Example ####
 
 Suppose you want to answer polls made by poll host `teacher123` every Monday and Wednesday 
-from 11:30 AM to 12:30 PM in your timezone on your UW account. To do this, first deploy to Heroku:
-
-
-Set the config variables as follows:
+from 11:30 AM to 12:30 PM in your timezone on your UW account. To do this, set the config 
+variables as follows:
 
 * `DAY_OF_WEEK=mon,wed`
 * `HOUR=11`
