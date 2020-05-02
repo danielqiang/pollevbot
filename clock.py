@@ -1,5 +1,5 @@
 """
-Program scheduler to run on a Heroku web dyno.
+Program scheduler to run on a Heroku clock dyno.
 
 Required config variables:
     - USERNAME
