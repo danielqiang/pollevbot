@@ -10,11 +10,11 @@ Requires Python 3.7 or later.
 [Requests](https://pypi.org/project/requests/), 
 [BeautifulSoup](https://pypi.org/project/beautifulsoup4/). 
 
-[APScheduler](https://pypi.org/project/APScheduler/) if you'd like to deploy to Heroku.
+[APScheduler](https://pypi.org/project/APScheduler/) to deploy to Heroku.
 
 ## Usage
 
-First, install `pollevbot`:
+Install `pollevbot`:
 ```
 pip install pollevbot
 ```
@@ -44,13 +44,30 @@ Alternatively, you can clone this repo, set your login credentials in
 
 ## Heroku
 
+`pollevbot` can be configured to run at scheduled dates/times with [Heroku](http://heroku.com/). 
+Suppose you want to answer polls made by poll host `teacher123` every Monday and Wednesday 
+from 11:30 AM to 12:30 PM in your timezone. To do this, first deploy to Heroku:
+
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/danielqiang/pollevbot)
 
-**Note**: the config variables (`DAY_OF_WEEK`, `HOUR`, `MINUTE`) are 
-[cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) strings.
-For example, setting `DAY_OF_WEEK=mon,wed`, `HOUR=11`, `MINUTE=0` instructs `pollevbot` to run
-on Mondays and Wednesdays at 11 AM in your timezone (automatically detected).
+Set the config variables as follows:
 
+* `DAY_OF_WEEK=mon,wed`
+* `HOUR=11`
+* `LIFETIME=3600`
+* `LOGIN_TYPE=uw`
+* `MINUTE=30`
+* `PASSWORD=yourpassword`
+* `POLLHOST=teacher123`
+* `USERNAME=yourusername`
+
+**Notes**: 
+
+* The variables (`DAY_OF_WEEK`, `HOUR`, `MINUTE`) are 
+[cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) strings.
+* Your timezone is automatically detected.
+
+Then click `Deploy App`.
 ## Disclaimer
 
 I do not promote or condone the usage of this script for any kind of academic misconduct 

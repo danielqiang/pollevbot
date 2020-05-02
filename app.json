@@ -14,15 +14,12 @@
         },
         "DAY_OF_WEEK": {
             "description": "Cron string specifying weekdays to run pollevbot",
-            "value": "mon,wed"
         },
         "HOUR": {
             "description": "Cron string specifying which hours to run pollevbot",
-            "value": "11"
         },
         "MINUTE": {
             "description": "Cron string specifying what minutes to run pollevbot",
-            "value": "0"
         },
         "LOGIN_TYPE": {
             "description": "Login protocol to use (either uw or pollev)",
@@ -30,7 +27,7 @@
         },
         "LIFETIME": {
             "description": "Time to run pollevbot before terminating (in seconds). Set to inf to run forever.",
-            "value": "inf"
+            "value": "3600"
         }
     }
 }
