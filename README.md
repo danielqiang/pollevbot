@@ -46,7 +46,14 @@ Alternatively, you can clone this repo, set your login credentials in
 
 [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/danielqiang/pollevbot)
 
+**Note**: the config variables (`DAY_OF_WEEK`, `HOUR`, `MINUTE`) are 
+[cron](https://apscheduler.readthedocs.io/en/stable/modules/triggers/cron.html) strings.
+For example, setting `DAY_OF_WEEK=mon,wed`, `HOUR=11`, `MINUTE=0` instructs `pollevbot` to run
+on Mondays and Wednesdays at 11 AM in your timezone (automatically detected).
 
 ## Disclaimer
 
-I do not promote or condone the usage of this script for any kind of academic misconduct or dishonesty. I wrote this script for the sole purpose of educating myself on cybersecurity and web protocols, and cannot be held liable for any indirect, incidental, consequential, special, or exemplary damages arising out of or in connection with the usage of this script.
+I do not promote or condone the usage of this script for any kind of academic misconduct 
+or dishonesty. I wrote this script for the sole purpose of educating myself on cybersecurity 
+and web protocols, and cannot be held liable for any indirect, incidental, consequential, 
+special, or exemplary damages arising out of or in connection with the usage of this script.
