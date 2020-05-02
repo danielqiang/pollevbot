@@ -13,13 +13,13 @@
             "description": "PollEv host name"
         },
         "DAY_OF_WEEK": {
-            "description": "Cron string specifying weekdays to run pollevbot",
+            "description": "Cron string specifying weekdays to run pollevbot"
         },
         "HOUR": {
-            "description": "Cron string specifying which hours to run pollevbot",
+            "description": "Cron string specifying which hours to run pollevbot"
         },
         "MINUTE": {
-            "description": "Cron string specifying what minutes to run pollevbot",
+            "description": "Cron string specifying what minutes to run pollevbot"
         },
         "LOGIN_TYPE": {
             "description": "Login protocol to use (either uw or pollev)",
