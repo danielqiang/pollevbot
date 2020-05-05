@@ -57,7 +57,8 @@ def main():
 
     if check_day():
         with PollBot(user, password, host,
-                     login_type=login_type, lifetime=lifetime) as bot:
+                     login_type=login_type, lifetime=lifetime,
+                     max_option=3, open_wait=10) as bot:
             bot.run()
     else:
         logger.info("pollevbot is not configured to run today. Exiting.")

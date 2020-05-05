@@ -1,4 +1,4 @@
-from pollevbot.pollbot import PollBot
+from pollevbot import PollBot
 
 
 def main():
