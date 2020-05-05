@@ -37,8 +37,8 @@ class PollBot:
         :param login_type: Login protocol to use (either 'uw' or 'pollev').
                         If 'uw', uses MyUW (SAML2 SSO) to authenticate.
                         If 'pollev', uses pollev.com.
-        :param min_option: Minimum index (0-indexed) of option to select.
-        :param max_option: Maximum index (0-indexed) of option to select.
+        :param min_option: Minimum index (0-indexed) of option to select (inclusive).
+        :param max_option: Maximum index (0-indexed) of option to select (exclusive).
         :param closed_wait: Time to wait in seconds if no polls are open
                         before checking again.
         :param open_wait: Time to wait in seconds if a poll is open
