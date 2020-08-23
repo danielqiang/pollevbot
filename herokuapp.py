@@ -23,10 +23,10 @@ import logging
 from datetime import date
 from pollevbot import PollBot
 
-required_vars = {'USERNAME', 'PASSWORD', 'POLLHOST',
-                 'DAY_OF_WEEK', 'LOGIN_TYPE', 'LIFETIME'}
-missing_vars = sorted(required_vars - set(os.environ))
-assert len(missing_vars) == 0, f"Missing required config variables: {missing_vars}"
+required = {'USERNAME', 'PASSWORD', 'POLLHOST',
+            'DAY_OF_WEEK', 'LOGIN_TYPE', 'LIFETIME'}
+missing = sorted(required - set(os.environ))
+assert len(missing) == 0, f"Missing required config variables: {missing}"
 
 logger = logging.getLogger(__name__)
 

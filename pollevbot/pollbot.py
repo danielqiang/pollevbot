@@ -48,7 +48,7 @@ class PollBot:
         :raises ValueError: if login_type is not 'uw' or 'pollev'.
         """
         if login_type not in {'uw', 'pollev'}:
-            raise ValueError(f"'{self.login_type}' is not a supported login type. "
+            raise ValueError(f"'{login_type}' is not a supported login type. "
                              f"Use 'uw' or 'pollev'.")
         if login_type == 'pollev' and user.strip().lower().endswith('@uw.edu'):
             logger.warning(f"{user} looks like a UW email. "
@@ -92,11 +92,10 @@ class PollBot:
         url = endpoints['csrf'].format(timestamp=self.timestamp())
         return self.session.get(url).json()['token']
 
-    def _pollev_login(self):
+    def _pollev_login(self) -> bool:
         """
         Logs into PollEv through pollev.com.
-
-        :raises LoginError: if login fails.
+        Returns True on success, False otherwise.
         """
         logger.info("Logging into PollEv through pollev.com.")
 
@@ -104,14 +103,12 @@ class PollBot:
                               headers={'x-csrf-token': self._get_csrf_token()},
                               data={'login': self.user, 'password': self.password})
         # If login is successful, PollEv sends an empty HTTP response.
-        if r.text:
-            raise LoginError("Your username or password was incorrect.")
+        return not r.text
 
     def _uw_login(self):
         """
         Logs into PollEv through MyUW.
-
-        :raises LoginError: if login fails.
+        Returns True on success, False otherwise.
         """
         import bs4 as bs
         import re
@@ -134,7 +131,7 @@ class PollBot:
 
         # When user authentication fails, UW will send an empty SAML response.
         if not saml_response:
-            raise LoginError("Your username or password was incorrect.")
+            return False
 
         r = self.session.post(endpoints['uw_callback'],
                               data={'SAMLResponse': saml_response['value']})
@@ -142,6 +139,7 @@ class PollBot:
         self.session.post(endpoints['uw_auth_token'],
                           headers={'x-csrf-token': self._get_csrf_token()},
                           data={'token': auth_token})
+        return True
 
     def login(self):
         """
@@ -150,9 +148,11 @@ class PollBot:
         :raises LoginError: if login failed.
         """
         if self.login_type.lower() == 'uw':
-            self._uw_login()
+            success = self._uw_login()
         else:
-            self._pollev_login()
+            success = self._pollev_login()
+        if not success:
+            raise LoginError("Your username or password was incorrect.")
         logger.info("Login successful.")
 
     def get_firehose_token(self) -> str:
@@ -168,9 +168,11 @@ class PollBot:
         # PollEverywhere generates using js. They are random uuids.
         self.session.cookies['pollev_visitor'] = str(uuid4())
         self.session.cookies['pollev_visit'] = str(uuid4())
-        r = self.session.get(endpoints['firehose_auth'].format(
-            host=self.host, timestamp=self.timestamp)
+        url = endpoints['firehose_auth'].format(
+            host=self.host,
+            timestamp=self.timestamp
         )
+        r = self.session.get(url)
 
         if "presenter not found" in r.text.lower():
             raise ValueError(f"'{self.host}' is not a valid poll host.")
@@ -179,15 +181,18 @@ class PollBot:
     def get_new_poll_id(self, firehose_token=None) -> Optional[str]:
         import json
 
+        if firehose_token:
+            url = endpoints['firehose_with_token'].format(
+                host=self.host,
+                token=firehose_token,
+                timestamp=self.timestamp
+            )
+        else:
+            url = endpoints['firehose_no_token'].format(
+                host=self.host,
+                timestamp=self.timestamp
+            )
         try:
-            if firehose_token:
-                url = endpoints['firehose_with_token'].format(
-                    host=self.host, token=firehose_token, timestamp=self.timestamp
-                )
-            else:
-                url = endpoints['firehose_no_token'].format(
-                    host=self.host, timestamp=self.timestamp
-                )
             r = self.session.get(url, timeout=0.3)
             # Unique id for poll
             poll_id = json.loads(r.json()['message'])['uid']
