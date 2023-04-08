@@ -6,6 +6,8 @@ chardet==3.0.4
 idna==2.9
 pytz==2020.1
 requests==2.23.0
+openai==0.27.4
+termcolor==2.2.0
 six==1.14.0
 soupsieve==2.0
 tzlocal==2.0.0

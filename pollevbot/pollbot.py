@@ -3,6 +3,9 @@ import logging
 import time
 from typing import Optional
 from .endpoints import endpoints
+from .autoanswer import get_answer
+from re import search
+from termcolor import colored
 
 logger = logging.getLogger(__name__)
 __all__ = ['PollBot']
@@ -190,7 +193,7 @@ class PollBot:
         else:
             url = endpoints['firehose_no_token'].format(
                 host=self.host,
-                timestamp=self.timestamp
+                timestamp=self.timestamp()
             )
         try:
             r = self.session.get(url, timeout=0.3)
@@ -210,17 +213,28 @@ class PollBot:
 
         url = endpoints['poll_data'].format(uid=poll_id)
         poll_data = self.session.get(url).json()
+        if "options" not in poll_data:
+            return
         options = poll_data['options'][self.min_option:self.max_option]
+        title = poll_data["title"]
+        options = {x["id"]:x["value"] for x in options}
+        question = title + "\n" + "\n".join(str(x) + ": " + options[x] for x in options)
+        answer = get_answer(question)
         try:
-            option_id = random.choice(options)['id']
-        except IndexError:
-            # `options` was empty
-            logger.error(f'Could not answer poll: poll only has '
-                         f'{len(poll_data["options"])} options but '
-                         f'self.min_option was {self.min_option} and '
-                         f'self.max_option: {self.max_option}')
-            return {}
-        r = self.session.post(
+            option_id = int(search(r'\d{9}', answer).group(0))
+            if option_id not in options.keys():
+                raise AttributeError()
+            print("gpt-3.5-turbo answered: ", str(option_id) + ": " + options[option_id])
+        except AttributeError:
+            numbered = {}
+            for i, x in enumerate(options):
+                numbered[i] = x
+            print(colored("Options: ", "red"))
+            for i in numbered:
+                print(i, options[numbered[i]])
+            print(colored("gpt-3.5-turbo answered: ", "red"), answer)
+            option_id = numbered[int(input("Which one? "))]
+        r = self.session.post( 
             endpoints['respond_to_poll'].format(uid=poll_id),
             headers={'x-csrf-token': self._get_csrf_token()},
             data={'option_id': option_id, 'isPending': True, 'source': "pollev_page"}
